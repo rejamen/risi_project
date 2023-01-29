@@ -9,14 +9,15 @@
     <script src='main.js'></script>
 </head>
 <body>  
-        <h1>Basic user creation</h1>
-        <form action="/save" method="POST">
-            <input name="name" type="text" placeholder="name..."/>
-            <input name="lastname" type="text" placeholder="lastname..."/>
-            <button type="submit">SAVE</button>
-        </form>
+    
+    <h1>Edit user</h1>
+    <form action="/users/{{ user_id }}/edit" method="POST">
+        <input name="name" type="text" value="{{ name }}"/>
+        <input name="lastname" value="{{ lastname}}"/>
+        <button type="submit">SAVE</button>
+    </form>
 
-        <a href="/users">User List</a>
+    <a href="/users">Back</a>
     
 </body>
 </html>

@@ -10,17 +10,16 @@
 </head>
 <body>  
         <h1>User list</h1>
-        <table>
-            <tr>
-              <th>Nombre</th>
-              <th>Apellido</th>
-            </tr>
-            {% for user in users %}
-            <tr>
-              <td>{{ user[0] }}</td>
-              <td>{{ user[1] }}</td>
-            </tr>
-            {% endfor %}
-        </table>
+        <ul>
+          {% for user in users %}
+            <li> 
+              <a href="/users/{{ user[0] }}/details">{{ user[1] }} {{ user[2] }}</a> 
+              <a href="/users/{{ user[0] }}/edit">Edit</a> 
+              <a href="/users/{{ user[0] }}/delete">Delete</a> 
+            </li>
+          {% endfor %}
+        </ul>
+
+        <a href="/">Home</a>
 </body>
 </html>
