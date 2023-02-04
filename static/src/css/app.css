@@ -1,0 +1,11 @@
+.table tr td a {
+    text-decoration: none;
+    color: gray;
+}
+.icons-container {
+    text-align: right;
+}
+.first-icon {
+    margin-right: 5px;
+    color: #0a58ca;
+}

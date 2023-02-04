@@ -2,6 +2,7 @@ import os
 import uuid
 
 from flask import Flask, redirect, render_template, request
+from flask import send_from_directory, url_for
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 from .models.base import Base
@@ -24,13 +25,13 @@ def index():
     """Homepage controller.
 
     Returns:
-        template: render index.html template
+        redirect: user list page
     """
-    return render_template('index.html', names={})
+    return redirect(url_for('user_list'))
 
 
 @app.route('/users', methods=['GET'])
-def users_list():
+def user_list():
     """Users list controller.
 
     Retrieve all users from the DB and show them in a list view.
@@ -40,6 +41,16 @@ def users_list():
     """
     users = get_users_data()
     return render_template('user_list.html', users=users)
+
+
+@app.route('/users/add', methods=['GET'])
+def users_add():
+    """Users add controller.
+
+    Returns:
+        template: user add template.
+    """
+    return render_template('user_add.html')
 
 
 @app.route('/save', methods=['POST'])
@@ -54,9 +65,23 @@ def save_user():
     """
     name = request.form['name']
     lastname = request.form['lastname']
+    description = request.form['description']
+    picture = request.files["picture"]
     user_hash = generate_user_hash()
-    _save_user(name=name, lastname=lastname, user_hash=user_hash)
-    return redirect('/users')
+    _upload_user_picture(user_hash, picture)
+    _save_user(
+        name=name, lastname=lastname,
+        user_hash=user_hash, description=description
+    )
+    return redirect(url_for('user_list'))
+
+
+def _upload_user_picture(user_hash, picture):
+    upload_path = f'uploads/{user_hash}'
+    if not os.path.exists(upload_path):
+        os.makedirs(upload_path)
+    if picture.filename != '':
+        picture.save(f'uploads/{user_hash}/picture.png')
 
 
 def _save_user(**kwargs):
@@ -65,6 +90,14 @@ def _save_user(**kwargs):
     user = User(**kwargs)
     session.add(user)
     session.commit()
+
+
+@app.route('/uploads/<user_hash>/<filename>')
+def serve_image(filename, user_hash):
+    return send_from_directory(
+        f'uploads/{user_hash}/',
+        filename
+    )
 
 
 @app.route('/users/<string:user_hash>/details', methods=['GET'])
@@ -84,7 +117,7 @@ def user_details(**kwargs):
 @app.route('/users/<string:user_hash>/edit', methods=['POST', 'GET'])
 def edit_user(**kwargs):
     """Edit user controller.
-    
+
     Handle both HTTP calls: GET and POST, to fulfill the form with user
     data and save the new content.
     """
@@ -98,8 +131,14 @@ def edit_user(**kwargs):
     if request.method == 'POST':
         name = request.form['name']
         lastname = request.form['lastname']
-        _update_user_data(user_hash, name=name, lastname=lastname)
-        return redirect(f'/users/{user_hash}/details')
+        description = request.form['description']
+        picture = request.files["picture"]
+        _upload_user_picture(user_hash, picture)
+        _update_user_data(
+            user_hash, name=name, lastname=lastname,
+            description=description
+        )
+        return redirect(url_for('user_details', user_hash=user_hash))
 
 
 def _update_user_data(user_hash, **kwargs):
@@ -108,10 +147,12 @@ def _update_user_data(user_hash, **kwargs):
     Args:
         user_hash (str): user to be updated.
     """
-    session.query(User).filter_by(user_hash=user_hash).update({
+    values = {
         User.name: kwargs.get('name'),
         User.lastname: kwargs.get('lastname'),
-    })
+        User.description: kwargs.get('description'),
+    }
+    session.query(User).filter_by(user_hash=user_hash).update(values)
     session.commit()
 
 
@@ -125,7 +166,7 @@ def delete_user(**kwargs):
     user_hash = kwargs.get('user_hash')
     session.query(User).filter_by(user_hash=user_hash).delete()
     session.commit()
-    return redirect('/users')
+    return redirect(url_for('user_list'))
 
 
 def generate_user_hash():

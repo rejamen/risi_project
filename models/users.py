@@ -10,9 +10,11 @@ class User(Base):
     name: Mapped[str] = mapped_column(String(30))
     lastname: Mapped[str] = mapped_column(String(30))
     user_hash: Mapped[str] = mapped_column(String(64))
+    description: Mapped[str] = mapped_column(String(300))
 
     def __repr__(self) -> str:
         return (
             f"User(id={self.id!r}, name={self.name!r}, "
             f"lastname={self.lastname!r}, user_hash={self.user_hash!r})"
+            f"description={self.description!r}"
         )
