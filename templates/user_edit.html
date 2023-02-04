@@ -11,9 +11,9 @@
 <body>  
     
     <h1>Edit user</h1>
-    <form action="/users/{{ user_id }}/edit" method="POST">
-        <input name="name" type="text" value="{{ name }}"/>
-        <input name="lastname" value="{{ lastname}}"/>
+    <form action="/users/{{ user.user_hash }}/edit" method="POST">
+        <input name="name" type="text" value="{{ user.name }}"/>
+        <input name="lastname" value="{{ user.lastname }}"/>
         <button type="submit">SAVE</button>
     </form>
 

@@ -1,0 +1,6 @@
+Flask
+pytesseract
+pillow
+sqlalchemy
+flask_sqlalchemy
+psycopg2-binary
