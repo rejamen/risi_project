@@ -11,21 +11,20 @@
 </head>
 <body>  
     <div class="container">
-        <h1>Edit user</h1>
-        <form action="{{ url_for('edit_user', user_hash=user.user_hash) }}" method="POST" enctype="multipart/form-data">
+        <h3>Add new User</h3>
+        
+        <form action="{{ url_for('save_user') }}" method="POST" enctype="multipart/form-data">
             <div class="mb-3">
                 <label for="name" class="form-label">Name</label>
-                <input class="form-control" name="name" id="name" value="{{ user.name }}" required>
+                <input class="form-control" name="name" id="name" required>
             </div>
             <div class="mb-3">
                 <label for="lastname" class="form-label">Lastname</label>
-                <input class="form-control" name="lastname" id="lastname" value="{{ user.lastname }}" required>
+                <input class="form-control" name="lastname" id="lastname" required>
             </div>
             <div class="mb-3">
                 <label for="description" class="form-label">Description</label>
-                <textarea class="form-control" name="description" id="description" rows="3">
-                    {{ user.description }}
-                </textarea>
+                <textarea class="form-control" name="description" id="description" rows="3"></textarea>
             </div>
             <div class="mb-3">
                 <label for="picture" class="form-label">Picture</label>
@@ -36,10 +35,8 @@
             </button>
             <a href="{{ url_for('user_list') }}" class="btn btn-secondary"> <i class="fa fa-arrow-left"></i> Back</a>
         </form>
-    </div>
-
-    
-    
-    
+        <hr/>
+        
+    </div>    
 </body>
 </html>
