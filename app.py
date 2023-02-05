@@ -104,7 +104,7 @@ def serve_image(filename, user_hash):
 def user_details(**kwargs):
     """User details controller.
 
-    Retrieve user details view data. 
+    Retrieve user details view data.
 
     Returns:
         template: user details view.
@@ -195,6 +195,21 @@ def get_users_data(user_hash=None):
     if not user_hash:
         return session.query(User).all()
     return session.query(User).filter_by(user_hash=user_hash).scalar()
+
+
+@app.route('/users/search', methods=['POST'])
+def user_search(**kwargs):
+    """User search controller
+    """
+    search_data = request.form['search_value']
+    users = _search_user(search_data)
+    return redirect(url_for('user_list', users=users))
+
+
+def _search_user(search_data):
+    """Search users from database.
+    """
+    return session.query(User).filter(User.name.like('%' + search_data + '%')).all()
 
 
 if __name__ == '__main__':
