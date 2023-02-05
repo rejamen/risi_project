@@ -12,7 +12,7 @@
 <body>  
     <div class="container">
         <h3>Add new User</h3>
-        
+        <hr/>
         <form action="{{ url_for('save_user') }}" method="POST" enctype="multipart/form-data">
             <div class="mb-3">
                 <label for="name" class="form-label">Name</label>
@@ -35,8 +35,6 @@
             </button>
             <a href="{{ url_for('user_list') }}" class="btn btn-secondary"> <i class="fa fa-arrow-left"></i> Back</a>
         </form>
-        <hr/>
-        
     </div>    
 </body>
 </html>

@@ -9,3 +9,25 @@
     margin-right: 5px;
     color: #0a58ca;
 }
+.top-menu-container {
+    display: flex;
+    align-items: center;
+}
+.top-menu-container btn {
+    display: inline-block;
+    margin-right: 10px;
+}
+.search-box {
+    display: inline-block;
+    width: 100%;
+    text-align: right;
+    padding-left: 10px;
+}
+form {
+display: flex;
+}
+  
+button[type="submit"] {
+width: 80px;
+margin-left: 5px;
+}
