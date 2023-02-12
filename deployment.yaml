@@ -1,0 +1,80 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: risi-project-kubernetes
+spec:
+  selector:
+    matchLabels:
+      name: risi-project-kubernetes
+  template:
+    metadata:
+      labels:
+        name: risi-project-kubernetes
+    spec:
+      containers:
+        - name: app
+          image: rejamen/risi-project-kubernetes:1.0.5
+          ports:
+            - containerPort: 5000
+          env:
+            - name: POSTGRES_HOST
+              value: "db-service"
+            - name: POSTGRES_PORT
+              value: "5432"
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: risi-project-secrets
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: risi-project-secrets
+                  key: POSTGRES_PASSWORD
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: risi-project-secrets
+                  key: POSTGRES_DB
+          volumeMounts:
+            - name: secrets
+              mountPath: /etc/secrets
+        - name: db
+          image: postgres:12
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: risi-project-secrets
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: risi-project-secrets
+                  key: POSTGRES_PASSWORD
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: risi-project-secrets
+                  key: POSTGRES_DB
+          volumeMounts:
+            - name: postgres-storage
+              mountPath: /var/lib/postgresql/data
+              subPath: postgres
+      volumes:
+        - name: secrets
+          downwardAPI:
+            items:
+              - path: "POSTGRES_USER"
+                fieldRef:
+                  fieldPath: metadata.annotations['POSTGRES_USER']
+              - path: "POSTGRES_PASSWORD"
+                fieldRef:
+                  fieldPath: metadata.annotations['POSTGRES_PASSWORD']
+              - path: "POSTGRES_DB"
+                fieldRef:
+                  fieldPath: metadata.annotations['POSTGRES_DB']
+        - name: postgres-storage
+          emptyDir: {}

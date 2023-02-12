@@ -10,9 +10,11 @@ from .models.users import User
 
 app = Flask(__name__)
 engine = create_engine(
-    'postgresql://{0}:{1}@db:5432/{2}'.format(
+    'postgresql://{0}:{1}@{2}:{3}/{4}'.format(
         os.environ.get('POSTGRES_USER'),
         os.environ.get('POSTGRES_PASSWORD'),
+        os.environ.get('POSTGRES_HOST'),
+        os.environ.get('POSTGRES_PORT'),
         os.environ.get('POSTGRES_DB'),
     )
 )
